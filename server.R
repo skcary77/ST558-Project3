@@ -10,7 +10,13 @@ games$Year_of_Release <- as.numeric(games$Year_of_Release)
 games$User_Score <- as.numeric(games$User_Score) * 10
 nrow(games)
 games <- games[complete.cases(games), ]
-games <- games[,!(names(games) %in% c("NA_Sales","EU_Sales","JP_Sales","Other_Sales"))]
+#any publishers with less than 200 games should be modeled as 'other'
+pubCount <- as.data.frame(table(games$Publisher),stringsAsFactors = FALSE) %>% 
+        dplyr::filter(Freq >= 200) %>% select(Var1)
+#probably exclude Developer and Game Name from prediction set
+games$Publisher <- if_else(games$Publisher %in% pubCount$Var1,games$Publisher,"Other")
+games <- games[,!(names(games) %in% c("NA_Sales","EU_Sales","JP_Sales","Other_Sales","Developer"))]
+
 
 shinyServer(function(input, output, session) {
 
@@ -18,6 +24,10 @@ shinyServer(function(input, output, session) {
                 games[games[,input$scatterVar] >= input$scoreRange[1] &
                               games[,input$scatterVar] <= input$scoreRange[2]        
                       ,]
+        })
+        
+        output$ex1 <- renderUI({
+                withMathJax(helpText('Dynamic output 1:  $$\\alpha^2$$'))
         })
         
         #create plot
@@ -57,11 +67,62 @@ shinyServer(function(input, output, session) {
         lmFit <- lm(lmFormula, data = games)
         })
         
+        myPredDF <- reactive({
+                data.frame(
+                        Platform = input$predPlatform,
+                        Year_of_Release = input$predYear,
+                        Genre = input$predGenre,
+                        Publisher = input$predPublisher,
+                        Critic_Score = input$predCriticScore,
+                        Critic_Count = input$predCriticCount,
+                        User_Score = input$predUserScore,
+                        User_Count = input$predUserCount,
+                        Rating = input$predRating)  
+        })
+        
+        #regression prediction
+        myLMPred <- reactive({
+                lmReact <- myLM()
+                predDF <- myPredDF()
+                predOut <- predict(lmReact,newdata = predDF)
+        })
+        
+        #K nearest neighbor
+        myKNNFit <- reactive({
+                gamesknn <- games[,c("Global_Sales","Year_of_Release","Critic_Score","Critic_Count","User_Score","User_Count")]
+                predDF <- myPredDF()
+                predDF <- predDF[,c("Year_of_Release","Critic_Score","Critic_Count","User_Score","User_Count")]
+                knnFit <- FNN::knn.reg(train=gamesknn[,-1],y=gamesknn$Global_Sales,k=input$predNeighbors)
+                knnFit$R2Pred
+        })
+        
+        myKNNPred <- reactive({
+                gamesknn <- games[,c("Global_Sales","Year_of_Release","Critic_Score","Critic_Count","User_Score","User_Count")]
+                predDF <- myPredDF()
+                predDF <- predDF[,c("Year_of_Release","Critic_Score","Critic_Count","User_Score","User_Count")]
+                knnPred <- FNN::knn.reg(train=gamesknn[,-1],test=predDF,y=gamesknn$Global_Sales,k=input$predNeighbors)
+                knnPred$pred
+        })
+        
         #create text info
         output$lmSummary <- renderPrint({
                 lmReact <- myLM()
                 summary(lmReact)
         })
+        output$lmPred <- renderPrint({
+                print(myLMPred())
+        })
+        
+        #knn output
+        output$knnR2 <- renderPrint({
+                print(myKNNFit())
+        })
+        output$knnPred <- renderPrint({
+                print(myKNNPred())
+        })
+        
+        
+        
 
         
 })
