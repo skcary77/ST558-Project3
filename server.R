@@ -4,6 +4,7 @@ library(ggplot2)
 library(plotly)
 
 #source("global.R",local=TRUE)
+#runGitHub("ST558-Project3", "skcary77")
 
 games <- read_csv("gameSales.csv")
 games$Year_of_Release <- as.numeric(games$Year_of_Release)
@@ -104,6 +105,13 @@ shinyServer(function(input, output, session) {
                 knnPred$pred
         })
         
+        #Unsupervised learning
+        myPC <- reactive({
+                #only using numeric columns
+                pcDF <- games[,c("Year_of_Release","Critic_Score","Critic_Count","User_Score","User_Count")]
+                pc <- prcomp(pcDF,center=input$pcCenter, scale = input$pcScale)
+        })
+        
         #create text info
         output$lmSummary <- renderPrint({
                 lmReact <- myLM()
@@ -119,6 +127,12 @@ shinyServer(function(input, output, session) {
         })
         output$knnPred <- renderPrint({
                 print(myKNNPred())
+        })
+        
+        #principal component output
+        #https://cran.r-project.org/web/packages/ggfortify/vignettes/plot_pca.html
+        output$biplot <- renderPlot({
+                biplot(myPC(), xlabs = rep(".", nrow(games)), cex = 1.2)
         })
         
         

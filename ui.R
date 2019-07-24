@@ -59,7 +59,7 @@ shinyUI(
                            ),
                            
                            navbarMenu("Modeling",
-                                      tabPanel("Linear Regression",
+                                      tabPanel("Supervised Learning",
                                                sidebarLayout(
                                                        sidebarPanel(
                                                                selectInput("lmPredictors", "Select variables to include", choices = c("Platform","Year_of_Release","Genre","Publisher","Critic_Score","User_Score","Rating"),multiple=TRUE),
@@ -114,8 +114,16 @@ shinyUI(
                                       
                                       
                                       tabPanel("Unsupervised Learning",
-                                               fluidRow(
-                                                       HTML("Blank")
+                                               sidebarLayout(
+                                                       sidebarPanel(
+                                                               checkboxInput("pcCenter", "Center Data",value=TRUE),
+                                                               checkboxInput("pcScale", "Scale Data",value = TRUE)
+                                                       ),
+
+                                                       #Show output
+                                                       mainPanel(
+                                                               plotOutput("biplot")
+                                                       )
                                                ) 
                                       )
                                       
