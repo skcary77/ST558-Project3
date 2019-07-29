@@ -1,0 +1,75 @@
+---
+title: "Video Game Sales App"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+
+---
+
+# Introduction
+
+The data for this app includes information on the sales of various video games. The original data comes from [vgchartz](http://www.vgchartz.com/), while the output is hosted on [Kaggle](https://www.kaggle.com/rush4ratio/video-game-sales-with-ratings). The purpose of the app is to provide interactive exploratory analysis, perform both supervised and unsupervised learning on the dataset, as well as provide the ability to browse through the dataset and export to CSV.
+
+# The Data
+
+The columns included in the dataset are listed below:
+
+   1. Name - The name of the game
+   2. Platform - Platform of the games release
+   3. Year_of_Release - Year of the game's release
+   4. Genre - Genre of the game
+   5. Publisher - Publisher of the game
+   6. Global_Sales - Total worldwide sales (in millions of units)
+   7. Critic_score - Aggregate score compiled by Metacritic staff
+   8. Critic_count - The number of critics used in coming up with the Critic_score
+   9. User_score - Score by Metacritic's subscribers
+   10. User_count - Number of users who gave the user_score
+   11. Rating - The ESRB ratings
+   
+In reading the [original data description](https://www.kaggle.com/rush4ratio/video-game-sales-with-ratings), you will notice some differences with the data presented in this app. The following data transformations have been performed so that the data would be in a better format for analysis
+
+* Only rows without any missing data have been kept. This reduces the number of observations from **16,719** to **6,826**
+* The *NA_Sales*, *EU_Sales*, *JP_Sales*, and *Other_Sales* columns have been removed so that only total global sales are included
+* The *User_Score* column, which originally ranged from 0-10, has been multipled by 10 so that it is on the same scale as the *Critic_Score* column which ranges from 0-100
+* *Publisher* and *Developer* contain similar information, so the *Developer* column was removed 
+* There were originally over 250 different Publishers included in the dataset. For purposes of this analysis only those that had published at least 200 games were kept with the original name, all others were put into a category labeled "Other"
+
+# App Layout
+
+## Data Exploration
+
+The data exploration page contains an interactive scatterplot and table. The scatterplot shows the relationship between Global Sales and the chosen x axis variable. You can color the scatterplot by one of the categorical variables, and select the score range using the slider.
+
+A table is also available to count how many games fall into each particular category of the chosen variable.
+
+## Modeling
+
+The modeling tab contains a subsection for both supervised learning and unsupervised learning.The supervised learning tab allows the user to create both a linear regression as well as a K nearest neighbor model. The unsupervised learning tab provides an interactive principal components analysis plot. 
+
+### Supervised Learning
+
+#### Linear Regression
+
+Linear regression attempts to model the response variable with the following equation:
+
+$$Y_i = \\beta_0 + \\beta_1x_i + \\beta_2x_i^2 + ... + \\beta_nx_i^n+E_i$$
+
+More information can be [found here](https://en.wikipedia.org/wiki/Linear_regression). The top menu allows you to choose which variables to include the regression. A summary of the model is provided on the right side of the page. 
+
+#### K Nearest Neighbor (KNN)
+
+More information on the KNN algorithm can be [found here](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm).Essentially it attemps to find the K closest observations in the training data to a given test observation. In a regression scenario, it then averages the reponse for the K observations to come up with a prediction. The second menu item allows you to set the number of neighbors. The R-squared is shows of the KNN model is shown below the regressions results. Note only numeric columns are included in this model.
+
+#### Prediction
+
+Once you have created your model, you can set the variables to create a prediction. The right hand side of the screen shows the prediction information for the the regression model and KNN model.
+
+### Unsupervised Learning
+
+The unsupervised learning tab shows a principal components analysis on the dataset. You can choose whether to center and/or scale the data, as well as what categorical variable to color the observations by. More information on principal components analysis can be [found here](https://en.wikipedia.org/wiki/Principal_component_analysis)
+
+## View Data
+
+This tab allows you to view and filter the data. You can sort by a particular column by clicking on the column name, and copy or download the data you are viewing to a CSV.
+
