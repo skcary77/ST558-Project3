@@ -21,10 +21,10 @@ The columns included in the dataset are listed below:
    4. Genre - Genre of the game
    5. Publisher - Publisher of the game
    6. Global_Sales - Total worldwide sales (in millions of units)
-   7. Critic_score - Aggregate score compiled by Metacritic staff
-   8. Critic_count - The number of critics used in coming up with the Critic_score
-   9. User_score - Score by Metacritic's subscribers
-   10. User_count - Number of users who gave the user_score
+   7. Critic_Score - Aggregate score compiled by Metacritic staff
+   8. Critic_Count - The number of critics used in coming up with the Critic_score
+   9. User_Score - Score by Metacritic's subscribers
+   10. User_Count - Number of users who gave the user_score
    11. Rating - The ESRB ratings
    
 In reading the [original data description](https://www.kaggle.com/rush4ratio/video-game-sales-with-ratings), you will notice some differences with the data presented in this app. The following data transformations have been performed so that the data would be in a better format for analysis
@@ -55,15 +55,17 @@ Linear regression attempts to model the response variable with the following equ
 
 $$Y_i = \\beta_0 + \\beta_1x_i + \\beta_2x_i^2 + ... + \\beta_nx_i^n+E_i$$
 
-More information can be [found here](https://en.wikipedia.org/wiki/Linear_regression). The top menu allows you to choose which variables to include the regression. A summary of the model is provided on the right side of the page. 
+More information on linear regression can be [found here](https://en.wikipedia.org/wiki/Linear_regression). The top menu allows you to choose which variables to include the regression. A summary of the model is provided on the right side of the page. 
 
 #### K Nearest Neighbor (KNN)
 
-More information on the KNN algorithm can be [found here](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm).Essentially it attemps to find the K closest observations in the training data to a given test observation. In a regression scenario, it then averages the reponse for the K observations to come up with a prediction. The second menu item allows you to set the number of neighbors. The R-squared is shows of the KNN model is shown below the regressions results. Note only numeric columns are included in this model.
+More information on the KNN algorithm can be [found here](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm).Essentially it attemps to find the K closest observations in the training data to a given test observation. In a regression scenario, it then averages the reponse for the K observations to come up with a prediction. The second menu item allows you to set the number of neighbors.
 
 #### Prediction
 
-Once you have created your model, you can set the variables to create a prediction. The right hand side of the screen shows the prediction information for the the regression model and KNN model.
+You can view the R-squared of the two models based on the parameters you have selected. 
+
+In addition, you can set the variables to create a prediction. The right hand side of the screen shows the prediction information for the the regression model and KNN model.
 
 ### Unsupervised Learning
 

@@ -8,7 +8,7 @@ library(shinycssloaders)
 
 source("global.R",local=TRUE)
 numericCols <- c("Year_of_Release","Critic_Score","Critic_Count","User_Score","User_Count")
-#runGitHub("ST558-Project3", "skcary77")
+
 
 shinyServer(function(input, output, session) {
     
